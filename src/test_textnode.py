@@ -36,6 +36,18 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(html_node.value, "")
         self.assertEqual(html_node.props, {"src": "https://path/to/image.jpg", "alt": "Alt text"})
 
+    def test_link(self):
+        node = TextNode("Test link", TextType.LINK, "www.google.com")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, "Test link")
+        self.assertEqual(html_node.props, {"href": "www.google.com"})
+
+    def test_invalid_text_type(self):
+        node = TextNode("Text", "invalid_type")
+        with self.assertRaisesRegex(ValueError, "Invalid text type:"):
+            text_node_to_html_node(node)
+
 
 if __name__ == "__main__":
     unittest.main()
