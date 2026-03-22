@@ -12,7 +12,7 @@ class ParentNode(HTMLNode):
         if not self.children:
             raise ValueError("HTML children missing.")
 
-        children_html = ""
+        children_html: str = ""
 
         for child in self.children:
             children_html += child.to_html()
