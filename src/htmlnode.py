@@ -12,7 +12,7 @@ class HTMLNode:
         if not self.props:
             return ""
 
-        prop = ""
+        prop: str = ""
 
         for key, value in self.props.items():
             prop += f" {key}=\"{value}\""
