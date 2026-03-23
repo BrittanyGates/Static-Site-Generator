@@ -33,3 +33,65 @@ def extract_markdown_images(text):
 def extract_markdown_links(text):
     link_text: list = re.findall(r"\[(.*?)\]\((.*?)\)", text)
     return link_text
+
+
+def split_nodes_image(old_nodes):
+    new_nodes: list = []
+    for node in old_nodes:
+        if node.text_type != TextType.PLAIN_TEXT:
+            new_nodes.append(node)
+            continue
+
+        remaining_text = node.text
+        image_markdown = extract_markdown_images(node.text)
+
+        # If the node doesn't have any images
+        if len(image_markdown) == 0:
+            new_nodes.append(node)
+            continue
+
+        for alt, url in image_markdown:
+            images = f"![{alt}]({url})"
+            sections = remaining_text.split(images, 1)
+
+            if sections[0]:
+                new_nodes.append(TextNode(sections[0], TextType.PLAIN_TEXT))
+
+            new_nodes.append(TextNode(alt, TextType.IMAGE, url))
+            remaining_text = sections[1]
+
+        if remaining_text != "":
+            new_nodes.append(TextNode(remaining_text, TextType.PLAIN_TEXT))
+
+    return new_nodes
+
+
+def split_nodes_link(old_nodes):
+    new_nodes: list = []
+    for node in old_nodes:
+        if node.text_type != TextType.PLAIN_TEXT:
+            new_nodes.append(node)
+            continue
+
+        remaining_text = node.text
+        link_markdown = extract_markdown_links(node.text)
+
+        # If the node doesn't have any links
+        if len(link_markdown) == 0:
+            new_nodes.append(node)
+            continue
+
+        for alt, url in link_markdown:
+            links = f"[{alt}]({url})"
+            sections = remaining_text.split(links, 1)
+
+            if sections[0]:
+                new_nodes.append(TextNode(sections[0], TextType.PLAIN_TEXT))
+
+            new_nodes.append(TextNode(alt, TextType.LINK, url))
+            remaining_text = sections[1]
+
+        if remaining_text != "":
+            new_nodes.append(TextNode(remaining_text, TextType.PLAIN_TEXT))
+
+    return new_nodes
