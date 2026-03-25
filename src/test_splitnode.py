@@ -1,6 +1,6 @@
 import unittest
 from splitnode import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, \
-    split_nodes_link
+    split_nodes_link, text_to_textnodes
 from textnode import TextNode, TextType
 
 
@@ -176,6 +176,46 @@ class TestSplitNode(unittest.TestCase):
         new_nodes = split_nodes_image([node])
         self.assertListEqual([
             TextNode("img", TextType.IMAGE, "https://.url")
+        ],
+            new_nodes,
+        )
+
+    def test_text_to_textnode(self):
+        node = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        new_nodes = text_to_textnodes(node)
+        self.assertListEqual([
+            TextNode("This is ", TextType.PLAIN_TEXT),
+            TextNode("text", TextType.BOLD_TEXT),
+            TextNode(" with an ", TextType.PLAIN_TEXT),
+            TextNode("italic", TextType.ITALIC_TEXT),
+            TextNode(" word and a ", TextType.PLAIN_TEXT),
+            TextNode("code block", TextType.CODE_TEXT),
+            TextNode(" and an ", TextType.PLAIN_TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.PLAIN_TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ],
+            new_nodes,
+        )
+
+    def test_text_to_textnode_with_plain_text(self):
+        node = "Just plain text."
+        new_nodes = text_to_textnodes(node)
+        self.assertListEqual([
+            TextNode("Just plain text.", TextType.PLAIN_TEXT)
+        ],
+            new_nodes,
+        )
+
+    def test_text_to_textnode_with_identical_markdown(self):
+        node = "This is **bold** and this is **also bold**."
+        new_nodes = text_to_textnodes(node)
+        self.assertListEqual([
+            TextNode("This is ", TextType.PLAIN_TEXT),
+            TextNode("bold", TextType.BOLD_TEXT),
+            TextNode(" and this is ", TextType.PLAIN_TEXT),
+            TextNode("also bold", TextType.BOLD_TEXT),
+            TextNode(".", TextType.PLAIN_TEXT),
         ],
             new_nodes,
         )
