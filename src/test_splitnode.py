@@ -1,6 +1,6 @@
 import unittest
 from splitnode import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, \
-    split_nodes_link, text_to_textnodes
+    split_nodes_link, text_to_textnodes, markdown_to_blocks
 from textnode import TextNode, TextType
 
 
@@ -220,6 +220,54 @@ class TestSplitNode(unittest.TestCase):
             new_nodes,
         )
 
+    def test_markdown_to_blocks(self):
+        markdown = """This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items"""
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(blocks, [
+            "This is **bolded** paragraph",
+            "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+            "- This is a list\n- with items",
+        ])
+
+    def test_markdown_to_blocks_with_several_line_breaks(self):
+        # There are five line breaks
+        markdown = """Block 1
+
+
+
+
+Block 2"""
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(blocks, [
+            "Block 1",
+            "Block 2",
+        ])
+
+    def test_markdown_to_blocks_with_whitespace_only(self):
+        markdown = "   \n\n\n   "
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(blocks, [])
+
+    def test_markdown_to_blocks_with_newlines_at_beginning_and_end(self):
+        markdown = "\n\nBlock1\n\nBlock2\n\n"
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(blocks, [
+            "Block1",
+            "Block2"
+        ])
+
+    def test_markdown_to_blocks_with_no_newlines(self):
+        markdown = "Just text with no newlines."
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(blocks, [
+            "Just text with no newlines.",
+        ])
 
 if __name__ == "__main__":
     unittest.main()
