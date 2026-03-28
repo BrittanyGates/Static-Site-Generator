@@ -1,3 +1,4 @@
+"""This module contains the functions to create TextNodes from raw Markdown strings."""
 from textnode import TextType, TextNode
 import re
 

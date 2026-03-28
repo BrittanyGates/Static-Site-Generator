@@ -1,3 +1,4 @@
+"""This module contains the class to represent a single HTML tag with no children."""
 from htmlnode import HTMLNode
 
 
