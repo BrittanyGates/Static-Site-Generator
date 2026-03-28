@@ -1,3 +1,4 @@
+"""This module contains the class to represent a node in an HTML document tree."""
 class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag

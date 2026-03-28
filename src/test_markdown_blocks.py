@@ -1,3 +1,4 @@
+"""This module contains the unit tests for the markdown_blocks module."""
 import unittest
 from markdown_blocks import BlockType, block_to_block_type
 

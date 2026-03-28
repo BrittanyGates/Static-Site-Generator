@@ -1,3 +1,4 @@
+"""This module contains the function to take a raw Markdown string and returns a list of block strings."""
 from enum import Enum
 import re
 

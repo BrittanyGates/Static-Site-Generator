@@ -1,3 +1,4 @@
+"""This module contains the different types of inline Markdown text and outputs it to HTML."""
 from enum import Enum
 from leafnode import LeafNode
 

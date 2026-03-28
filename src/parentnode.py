@@ -1,3 +1,4 @@
+"""This module handles the nesting of HTML nodes (not LeafNodes) inside one another."""
 from htmlnode import HTMLNode
 
 
