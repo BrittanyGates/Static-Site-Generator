@@ -143,3 +143,11 @@ def markdown_to_html_node(markdown):
             node = ordered_list_to_html_node(block)
             html_nodes.append(node)
     return ParentNode("div", html_nodes)
+
+def extract_title(markdown):
+    block_list = markdown_to_blocks(markdown)
+
+    for block in block_list:
+        if block.startswith("# "):
+            return block[2:].strip()
+    raise ValueError("No title found.")
