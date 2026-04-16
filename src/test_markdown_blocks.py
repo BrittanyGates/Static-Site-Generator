@@ -1,6 +1,6 @@
 """This module contains the unit tests for the Markdown_blocks module."""
 import unittest
-from markdown_blocks import BlockType, block_to_block_type, markdown_to_html_node
+from markdown_blocks import BlockType, block_to_block_type, markdown_to_html_node, extract_title
 
 
 class TestMarkdownBlocks(unittest.TestCase):
@@ -102,6 +102,26 @@ def hello():
         self.assertIn("<pre><code>def hello():\n    print(\"world\")</code></pre>", html)
         self.assertIn("<ul><li>Item 1 with <b>bold</b></li>", html)
         self.assertIn("<ol><li>First item</li><li>Second item</li></ol>", html)
+
+    def test_extract_title_with_no_title(self):
+        with self.assertRaises(ValueError):
+            extract_title("No heading here.")
+
+    def test_extract_title_with_title(self):
+        title = "# Title For Webpage"
+        self.assertEqual(extract_title(title), "Title For Webpage")
+
+    def test_extract_title_with_spaces_in_title(self):
+        title = "   # Title For Webpage   "
+        self.assertEqual(extract_title(title), "Title For Webpage")
+
+    def test_extract_title_not_in_the_first_block(self):
+        text = """
+This is some placeholder text.
+
+# Title"""
+        self.assertEqual(extract_title(text), "Title")
+
 
 if __name__ == "__main__":
     unittest.main()

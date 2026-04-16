@@ -1,3 +1,4 @@
+from markdown_blocks import markdown_to_html_node, extract_title
 from textnode import TextType, TextNode
 import os, shutil
 
@@ -27,11 +28,26 @@ def start_copy():
     copy_contents_from_source_to_destination(source_dir, destination_dir)
 
 
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}.")
+
+    with open(f"{from_path}", "r") as from_path_content, open(f"{template_path}", "r") as template_path_content:
+        content_html = from_path_content.read()
+        template_path_content = template_path_content.read()
+
+    from_path_content = markdown_to_html_node(content_html).to_html()
+    title = extract_title(content_html)
+    final_html = template_path_content.replace("{{ Title }}", title).replace("{{ Content }}", from_path_content)
+
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+
+    with open(f"{dest_path}", "w") as dest_path_content:
+        dest_path_content.write(final_html)
+
+
 def main():
     start_copy()
-
-    new_text_node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(new_text_node)
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 if __name__ == "__main__":
