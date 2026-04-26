@@ -22,7 +22,7 @@ def copy_contents_from_source_to_destination(source, destination):
 
 def start_copy():
     source_dir = "static"
-    destination_dir = "public"
+    destination_dir = "docs"
 
     if os.path.exists(destination_dir):
         shutil.rmtree(destination_dir)
